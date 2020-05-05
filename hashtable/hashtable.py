@@ -114,13 +114,22 @@ class HashTable:
                 node = node.next
 
    
-    # def resize(self):
-    #     """
-    #     Doubles the capacity of the hash table and
-    #     rehash all key/value pairs.
+    def resize(self):
+        """
+        Doubles the capacity of the hash table and
+        rehash all key/value pairs.
 
-    #     Implement this.
-    #     """
+        Implement this.
+        """
+        old_storage = self.storage
+        self.storage = [None] * self.capacity * 2
+        # for value in old_storage:
+        for i in range(len(old_storage)):
+            node = old_storage[i]
+
+            if node is not None:
+                self.put(node.key, node.value)
+                node = node.next
 
 if __name__ == "__main__":
     ht = HashTable(2)
