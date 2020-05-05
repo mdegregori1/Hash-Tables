@@ -54,8 +54,26 @@ class HashTable:
 
         Implement this.
         """
+        index = self.hash_index(key)
+        if self.storage[index] is None:
+            # No node at the index? Create one
+            self.storage[index] = HashTableEntry(key, value)
+        else:
+            # storage is not empty
+            # must check is storage contains key, or not
+            # set previous because linkedlist
+            node = self.storage[index]
+            previous = None
+            if node is not None and node.key == key:
+                    # linked list isn't empty and keys are equal
+                    # replace values
+                node.value = value
+                return
+                    # if key is not found, create a node with that key in current node
+            elif node is not None and node.key != key:
+                previous.next = HashTableEntry(key, value)
+                return
 
-   
     def delete(self, key):
         """
         Remove the value stored with the given key.
@@ -64,8 +82,17 @@ class HashTable:
 
         Implement this.
         """
-        # No node with given key found? Error
-        raise KeyError(f"Could not find key: \"{key}\"")
+        index = self.hash_index(key)
+        if self.storage[index] is None:
+            print(f'{key} was not found')
+            return None
+        else:
+            node = self.storage[index]
+            previous = None 
+            # if node with key exists, change its value to none
+            if node.key == key: 
+                node.value = None 
+
 
     def get(self, key):
         """
@@ -75,8 +102,18 @@ class HashTable:
 
         Implement this.
         """
+        index = self.hash_index(key)
+        if self.storage[index] is None:
+            print(f'{key} was not found')
+            return None
+        else:
+            node = self.storage[index]
+            if node.key == key:
+                return node.value
+            else:
+                node = node.next
 
-
+   
     # def resize(self):
     #     """
     #     Doubles the capacity of the hash table and
