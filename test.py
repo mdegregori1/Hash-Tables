@@ -40,10 +40,10 @@
 # array_1 = [[1,2], [3, 4], [5, 6], [7,8]]
 #expected result = 6
 def find_min(array_1):
-    total = 0
-    for i in array_1:
-        min_val = min(i)
-        total += min_val
+        total = 0
+        for i in array_1:
+                min_val = min(i)
+                total += min_val
         print(total)
         
 array_1 = [[8, 4], [90, -1, 3], [9, 62], [-7, -1, -56, -6], [201], [76, 18]]
