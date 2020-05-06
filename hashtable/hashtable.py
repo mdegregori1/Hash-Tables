@@ -19,6 +19,7 @@ class HashTable:
     def __init__(self, capacity):
         self.capacity = capacity 
         self.storage = [None] * capacity
+        self.keys = 0
 
     def fnv1(self, key):
         """
@@ -54,10 +55,14 @@ class HashTable:
 
         Implement this.
         """
+        # self.resize()
         index = self.hash_index(key)
+        
+
         if self.storage[index] is None:
             # No node at the index? Create one
             self.storage[index] = HashTableEntry(key, value)
+            self.keys += 1
         else:
             # storage contains a node
             # node = head, previous -> None
@@ -68,6 +73,7 @@ class HashTable:
                 # if node present, but only cointains None (no key), then set new key at head and return
                 if node is None: 
                     previous.next = HashTableEntry(key, value)
+                    self.keys += 1
                     return 
                 elif node.key == key:
                     # if keys match, then replace
@@ -99,8 +105,10 @@ class HashTable:
             while node is not None:
                 if node.key == key:
                     node.value = None
+                    self.keys -= 1
                 if previous:
                     previous.next = None
+                    self.keys -= 1
                     return
                 elif not previous or node.key != key:
                     previous = node
@@ -132,8 +140,6 @@ class HashTable:
                     node = node.next
  
 
-
-   
     def resize(self):
         """
         Doubles the capacity of the hash table and
@@ -141,16 +147,23 @@ class HashTable:
 
         Implement this.
         """
-        prev_storage = self.storage
-        self.storage = [None] * self.capacity * 2
+        load_factor = self.keys / self.capacity
 
-        for i in range(len(prev_storage)):
-            node = prev_storage[i]
+        if load_factor > 0.7:
+            prev_storage = self.storage
+            self.storage = [None] * self.capacity * 2
+
+        for node in prev_storage:
 
             while node is not None:
                 self.put(node.key, node.value)
                 node = node.next
 
+    # def check_size(self):
+    #     load_factor = self.keys / self.capacity
+
+    #     if load_factor > 0.7:
+    #         self.resize()
 
 if __name__ == "__main__":
     ht = HashTable(2)
@@ -158,6 +171,7 @@ if __name__ == "__main__":
     ht.put("line_1", "Tiny hash table")
     ht.put("line_2", "Filled beyond capacity")
     ht.put("line_3", "Linked list saves the day!")
+
 
     print("")
 
