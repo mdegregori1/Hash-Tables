@@ -59,20 +59,25 @@ class HashTable:
             # No node at the index? Create one
             self.storage[index] = HashTableEntry(key, value)
         else:
-            # storage is not empty
-            # must check is storage contains key, or not
-            # set previous because linkedlist
+            # storage contains a node
+            # node = head, previous -> None
             node = self.storage[index]
             previous = None
-            if node is not None and node.key == key:
-                    # linked list isn't empty and keys are equal
-                    # replace values
-                node.value = value
-                return
-                    # if key is not found, create a node with that key in current node
-            elif node is not None and node.key != key:
-                previous.next = HashTableEntry(key, value)
-                return
+            # must loop
+            while True:
+                # if node present, but only cointains None (no key), then set new key at head and return
+                if node is None: 
+                    previous.next = HashTableEntry(key, value)
+                    return 
+                elif node.key == key:
+                    # if keys match, then replace
+                    node.value = value
+                    return
+                elif node is not None and node.key != key:
+                    # if node has a value and the keys aren't equal, then string to old node
+                    previous = node
+                    node = node.next
+
 
     def delete(self, key):
         """
@@ -82,16 +87,25 @@ class HashTable:
 
         Implement this.
         """
+
         index = self.hash_index(key)
         if self.storage[index] is None:
             print(f'{key} was not found')
             return None
         else:
             node = self.storage[index]
-            previous = None 
-            # if node with key exists, change its value to none
-            if node.key == key: 
-                node.value = None 
+            previous = None
+            # if there is a node with value none, then its already deleted
+            while node is not None:
+                if node.key == key:
+                    node.value = None
+                if previous:
+                    previous.next = None
+                    return
+                elif not previous or node.key != key:
+                    previous = node
+                    node = node.next
+     
 
 
     def get(self, key):
@@ -108,10 +122,16 @@ class HashTable:
             return None
         else:
             node = self.storage[index]
-            if node.key == key:
-                return node.value
-            else:
-                node = node.next
+            # if node has val none, then it's useless to return None value
+            while node is not None:
+                if node.key == key:
+                    # if key, then return
+                    return node.value
+                else:
+                    # else, search for next node
+                    node = node.next
+ 
+
 
    
     def resize(self):
@@ -121,15 +141,16 @@ class HashTable:
 
         Implement this.
         """
-        old_storage = self.storage
+        prev_storage = self.storage
         self.storage = [None] * self.capacity * 2
-        # for value in old_storage:
-        for i in range(len(old_storage)):
-            node = old_storage[i]
 
-            if node is not None:
+        for i in range(len(prev_storage)):
+            node = prev_storage[i]
+
+            while node is not None:
                 self.put(node.key, node.value)
                 node = node.next
+
 
 if __name__ == "__main__":
     ht = HashTable(2)
