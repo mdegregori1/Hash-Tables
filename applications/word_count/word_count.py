@@ -1,5 +1,23 @@
+import re
+# allows us to specify the rules for the set of possible strings that we may want to match
 def word_count(s):
     # Implement me.
+    cache = {}
+    
+    word_list = re.split('[\s":;,.\-+=/\\\|[\]{}()*^&]+', s.lower())
+
+    for i in word_list:
+        if i == "":
+            continue
+        if i not in cache:
+            cache[i] = 1
+        else:
+            cache[i] += 1
+
+
+    return cache
+
+
 
 
 if __name__ == "__main__":
